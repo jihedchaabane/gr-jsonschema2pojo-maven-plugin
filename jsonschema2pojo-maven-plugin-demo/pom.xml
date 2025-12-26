@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.chj.gr</groupId>
+	<artifactId>jsonschema2pojo-maven-plugin-demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>jsonschema2pojo-maven-plugin-demo</name>
+
+	<properties>
+		<java.version>21</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- Versions à jour -->
+		<jsonschema2pojo.version>1.2.2</jsonschema2pojo.version>
+		<lombok.version>1.18.34</lombok.version>
+		<jackson.version>2.17.2</jackson.version>
+		<jakarta.persistence.version>3.1.0</jakarta.persistence.version>
+		<hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
+	</properties>
+
+	<dependencies>
+		<!-- module contenant l'annotateur (doit être installé dans ton repo local ou nexus) -->
+		<dependency>
+			<groupId>com.chj.gr</groupId>
+			<artifactId>jsonschema2pojo-maven-plugin-annotators-factories</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Compiler Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- jsonschema2pojo Plugin -->
+			<plugin>
+				<groupId>org.jsonschema2pojo</groupId>
+				<artifactId>jsonschema2pojo-maven-plugin</artifactId>
+				<version>${jsonschema2pojo.version}</version>
+
+				<configuration>
+					<!-- Dossier de sortie -->
+					<outputDirectory>
+						${project.build.directory}/generated-sources/jsonschema2pojo</outputDirectory>
+					<targetPackage>com.chj.gr.model</targetPackage>
+
+					<!-- Chemins des schemas -->
+					<sourcePaths>
+						<sourcePath>${basedir}/src/main/resources/schemas/identity-schema.json</sourcePath>
+					</sourcePaths>
+
+					<!-- Style de génération -->
+					<sourceType>jsonschema</sourceType>
+					<includeAdditionalProperties>false</includeAdditionalProperties>
+					<includeHashcodeAndEquals>false</includeHashcodeAndEquals>
+					<includeToString>false</includeToString>
+					<includeGetters>false</includeGetters> <!-- on utilise Lombok -->
+					<includeSetters>false</includeSetters>
+					<generateBuilders>false</generateBuilders>
+					<includeConstructors>false</includeConstructors>
+
+					<!-- On désactive toutes les annotations par défaut -->
+					<annotationStyle>NONE</annotationStyle>
+
+					<!-- TON ANNOTATEUR PERSONNALISÉ -->
+					<customAnnotator>com.chj.gr.annotators.LombokAnnotator</customAnnotator>
+
+					<!-- Important : on désactive la gestion par défaut des additionalProperties -->
+					<includeAdditionalProperties>false</includeAdditionalProperties>
+
+					<!-- Autres options utiles -->
+					<useJodaDates>false</useJodaDates>
+					<useLongIntegers>false</useLongIntegers>
+					<useBigDecimals>false</useBigDecimals>
+					<initializeCollections>true</initializeCollections>
+					<includeGeneratedAnnotation>false</includeGeneratedAnnotation>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>generate-pojos</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<!-- Résout les classes de l'annotateur -->
+				<dependencies>
+					<dependency>
+						<groupId>com.chj.gr</groupId>
+						<artifactId>jsonschema2pojo-maven-plugin-annotators-factories</artifactId>
+						<version>0.0.1-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- Ajoute les sources générées au build -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.6.0</version>
+				<executions>
+					<execution>
+						<id>add-generated-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/jsonschema2pojo</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

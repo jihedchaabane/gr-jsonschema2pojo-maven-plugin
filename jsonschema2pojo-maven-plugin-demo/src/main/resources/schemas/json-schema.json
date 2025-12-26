@@ -1,0 +1,78 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"definitions": {
+		"product": {
+			"type": "object",
+			"additionalProperties": {
+				"entity": true,
+				"table": true,
+				"lombok-builder": true,
+				"lombok-data": true,
+				"lombok-getter": true,
+				"lombok-setter": true,
+				"lombok-equals-and-hash-code": true,
+				"lombok-no-args-constructor": true,
+				"lombok-all-args-constructor": true,
+				"lombok-to-string": true
+			},
+			"properties": {
+				"id": {
+					"type": "integer"
+				},
+				"status": {
+					"javaType": "com.chj.gr.enums.EnumStatus",
+					"enum": [
+						"INITIATED",
+						"IN_PROGRESS",
+						"SUCCEEDED",
+						"FAILED"
+					],
+					"type": "string"
+				},
+				"organizationType": {
+					"javaType": "com.chj.gr.enums.EnumOrganizationType",
+					"enum": [
+						"AUTHORITY",
+						"COMPANY"
+					],
+					"type": "string"
+				},
+				"price": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"id",
+				"status",
+				"organizationType",
+				"price"
+			]
+		},
+		"proprietaryProduct": {
+			"type": "object",
+			"properties": {
+				"batchName": {
+					"type": "string"
+				}
+			},
+			"extends": "#/definitions/product"
+		},
+		"thirdPartyProduct": {
+			"type": "object",
+			"properties": {
+				"thirdPartyName": {
+					"type": "string"
+				}
+			},
+			"extends": "#/definitions/product"
+		}
+	},
+	"type": "object",
+	"properties": {
+		"product": {
+			"type": "object",
+			"$ref": "#/definitions/product"
+		}
+	},
+	"additionalProperties": false
+}

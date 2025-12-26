@@ -1,0 +1,93 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Identity",
+	"type": "object",
+	"additionalProperties": {
+		"entity": true,
+		"table": true,
+		"lombok-data": true,
+		"lombok-builder": true,
+		"lombok-to-string": true,
+		"lombok-equals-and-hash-code": true,
+		"lombok-no-args-constructor": true,
+		"lombok-all-args-constructor": true,
+		"bean-validation": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"minLength": 2,
+			"maxLength": 10,
+			"description": "Identifiant technique",
+			"required": true
+		},
+		"identityType": {
+			"javaType": "com.chj.gr.enums.EnumIdentityType",
+			"type": "string",
+			"enum": [
+				"PASSEPORT",
+				"CNI",
+				"PERMIS",
+				"CARTE_VITALE"
+			],
+			"default": "CNI",
+			"required": true
+		},
+		"status": {
+			"javaType": "com.chj.gr.enums.EnumStatus",
+			"type": "string",
+			"enum": [
+				"INITIATED",
+				"IN_PROGRESS",
+				"SUCCEEDED",
+				"FAILED"
+			],
+			"default": "INITIATED",
+			"required": true
+		},
+		"number": {
+			"type": "string",
+			"pattern": "^[A-Z0-9]{5,15}$",
+			"minLength": 5,
+			"maxLength": 15,
+			"required": true
+		},
+		"firstName": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 50,
+			"required": true
+		},
+		"lastName": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 50,
+			"required": true
+		},
+		"birthDate": {
+			"type": "string",
+			"format": "date",
+			"required": true
+		},
+		"issueDate": {
+			"type": "string",
+			"format": "date-time",
+			"required": false
+		},
+		"expiryDate": {
+			"type": "string",
+			"format": "date",
+			"required": false
+		},
+		"email": {
+			"type": "string",
+			"format": "email",
+			"required": false
+		},
+		"active": {
+			"type": "boolean",
+			"default": true,
+			"required": false
+		}
+	}
+}
